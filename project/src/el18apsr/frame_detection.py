@@ -102,10 +102,15 @@ class frameDetection():
                 cv2.drawContours(cv_image, [approximation], -1, (0, 255, 0), 2)
                 cv2.putText(cv_image, shape, (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2)
 
-                # idx = (center_x*pc_msg.row_step) + (center_y*pc_msg.point_step)
-                # point_xyz = struct.unpack_from('fff', pc_msg.data, offset=idx)
-                # array.append(point_xyz)
-
+                point_cloud = point_cloud2.read_points(pc_msg, skip_nans=False, field_names=("x", "y", "z"), uvs=[[center_x, center_y]])
+                point_xyz = next(point_cloud)
+                array.append(point_xyz)
+                
+                # point is in Camera Optical frame, i.e. point[0] x-down,  point[1] y-left, point[2] z-forward
+                
+                # print(point_xyz[2])
+                # print(pc_msg.header.frame_id)
+                
                 # check point here
 
         # or check points here
