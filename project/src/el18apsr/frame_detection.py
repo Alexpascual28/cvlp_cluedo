@@ -70,9 +70,10 @@ class frameDetection():
         colour_mask = cv2.bitwise_or(ry_mask, cm_mask)
 
         # Generalize mask by using morphology
-        kernel = np.ones((30,30), np.uint8)
-        colour_mask = cv2.morphologyEx(colour_mask, cv2.MORPH_CLOSE, kernel)
-        colour_mask = cv2.morphologyEx(colour_mask, cv2.MORPH_OPEN, kernel)
+        kernel_open = np.ones((15,15), np.uint8)
+        kernel_close = np.ones((30,30), np.uint8)
+        colour_mask = cv2.morphologyEx(colour_mask, cv2.MORPH_CLOSE, kernel_close)
+        colour_mask = cv2.morphologyEx(colour_mask, cv2.MORPH_OPEN, kernel_open)
 
         frame_mask = colour_mask
         
@@ -109,16 +110,17 @@ class frameDetection():
 
         # or check points here
         
+        cv2.imshow("rgb_mask", cv2.bitwise_or(ry_mask, cm_mask))
         cv2.imshow("frame_mask", frame_mask)
         cv2.imshow("camera_mask_feed", mask_image)
-        cv2.namedWindow('camera_cyan')
-        cv2.imshow('camera_cyan', cyan_mask)
-        cv2.namedWindow('camera_red')
-        cv2.imshow('camera_red', red_mask)
-        cv2.namedWindow('camera_yellow')
-        cv2.imshow('camera_yellow', yellow_mask)
-        cv2.namedWindow('camera_magenta')
-        cv2.imshow('camera_magenta', magenta_mask)
+        #cv2.namedWindow('camera_cyan')
+        #cv2.imshow('camera_cyan', cyan_mask)
+        #cv2.namedWindow('camera_red')
+        #cv2.imshow('camera_red', red_mask)
+        #cv2.namedWindow('camera_yellow')
+        #cv2.imshow('camera_yellow', yellow_mask)
+        #cv2.namedWindow('camera_magenta')
+        #cv2.imshow('camera_magenta', magenta_mask)
         cv2.waitKey(3)
 
         return
