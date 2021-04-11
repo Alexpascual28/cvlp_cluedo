@@ -6,41 +6,50 @@ import rospy
 import cv2
 import sys
 import os
-import rospkg
-import numpy as np
 
-from std_srvs.srv import Empty
+from std_srvs.srv import Trigger, TriggerResponse
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
 class CluedoIdentifier:
     def __init__(self):
-        self.rospkg_util = rospkg.RosPack()
         self.img_sub = rospy.Subscriber('/cluedo_img', Image, self.imgCallback)
+        self.srv = rospy.Service("cluedo_identify", Trigger, self.srvCallback)
+        
         self.cv_bridge = CvBridge()
-
         self.orb = cv2.ORB()
 
         self.frame = None
-        self.threshold = 0.75
+        self.threshold = 0.75 # for feature matching and template matching
+        self.min_matches = 20 # for feature matching
+        
+        self.success = False
 
         # this path will be used to correctly locate the cluedo images and to save the
         # detection result in the correct directory
         self.script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
         self.loadTemplates()
 
+        # for debug purposes
         # self.identifyTemplate()
+        # self.featureDetector()
+        
+        return
+    
+    def srvCallback(self, req):        
+        self.success = False
         self.featureDetector()
-
+        
+        res = TriggerResponse()
+        res.success = self.success
+        return res
+     
     def imgCallback(self, img_msg):
         try:
             self.frame = self.cv_bridge.imgmsg_to_cv2(img_msg, 'bgr8')
         except CvBridgeError as e:
             print("Caught CvBridge error!")
             print(e)
-
-        if self.frame is not None:
-            self.featureDetector()
 
         return
     
@@ -76,7 +85,7 @@ class CluedoIdentifier:
                 if m.distance < 0.75*n.distance:
                     good.append([m])
 
-            if len(good) > best_result[1]:
+            if len(good) > best_result[1] and len(good) >= self.min_matches:
                 best_result = (template[0], len(good))
             
             print("Num matches for {}: {}".format(template[0], len(good)))
@@ -84,8 +93,10 @@ class CluedoIdentifier:
         if best_result[1] != 0:
             print("Best match: {} with {} matches".format(best_result[0], best_result[1]))
             self.saveDetection(best_result[0])
+            self.success = True
         else:
             rospy.logerr("Failed to identify any character in the frame!")
+            self.success = False
         
         return
     
@@ -119,12 +130,13 @@ class CluedoIdentifier:
                 print(ratio)
 
                 if max_val >= self.threshold:
-                    cv2.rectangle(resized, max_loc, ((max_loc[0]+w), (max_loc[1]+h)), 255, 2)
-                    cv2.imshow("resized", resized)
-                    cv2.waitKey(0)
+                    # cv2.rectangle(resized, max_loc, ((max_loc[0]+w), (max_loc[1]+h)), 255, 2)
+                    # cv2.imshow("resized", resized)
+                    # cv2.waitKey(0)
 
                     if best_result is None or max_val > best_result[0]:
                         best_result = (max_val, max_loc, ratio, template[0])
+                        self.success = True
         
         val, loc, ratio, name = best_result
         print("Found match with: {}".format(name))
