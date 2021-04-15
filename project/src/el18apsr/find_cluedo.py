@@ -188,53 +188,51 @@ class findCluedo():
         return res
     
     def run_robot(self):
-        
         start_t = time.time()
         while self.start and (time.time() - start_t) <= 240:
             # Finite state machine
-            
             fsm = {
                 0: {
                     "output": self.search_output,
                     "condition": self.frame_detected,
-                    "next_state": [0,1]
+                    "second condition": True,
+                    "next_state": [0,1,0]
                     },
                 1: {
                     "output": self.approach_output,
-                    "condition": self.point_reached and self.frame_detected,
-                    "next_state": [1,2]
+                    "condition": self.point_reached,
+                    "second condition": self.frame_detected,
+                    "next_state": [1,2,0]
                     },
                 2: {
                     "output": self.wait_output,
                     "condition": self.card_detected,
-                    "next_state": [0,3]
+                    "second condition": True,
+                    "next_state": [0,3,2]
                     },
                 3: {
                     "output": self.exit_output,
                     "condition": False,
-                    "next_state": [3,3]
+                    "second condition": True,
+                    "next_state": [3,3,3]
                     }
             }
             state = fsm.get(self.current_state)
-            #print(state)
             output = state.get("output")
             condition = state.get("condition")
-            #print("Before:", self.point_reached)
-            #print(condition)
-            self.current_state = state.get("next_state")[condition]
-            
+            second_condition = state.get("second condition")
+            if second_condition == False:
+                self.current_state = state.get("next_state")[2]
+            else:
+                self.current_state = state.get("next_state")[condition]
             output()
-            #print("After:", self.point_reached)
-        
         return
         
     def search_output(self):
+        self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.left
-        start_time = time.time()
-        # Rotate for 2 seconds
         self.velocity.publish(self.desired_velocity)
-        
-        print("Searching.", "Frame Detected: ", self.frame_detected)
+        print("Searching. " + "Frame Detected: " + str(self.frame_detected))
         return
     
     def approach_output(self):
@@ -254,22 +252,20 @@ class findCluedo():
             reached[0] = True
         
         #Alternatively cx,cy can be used to position and rotate towards the object
-        
         _, width, _ = self.img_shape
-        centre = (width/2) - 1
+        center = (width/2) - 1
         
-        if math.fabs(self.frame_point[0] - centre) > 50:
-            
-            self.desired_velocity.angular.z = self.left if centre > self.frame_point[0] else self.right
+        if math.fabs(self.frame_point[0] - center) > 50:
+            self.desired_velocity.angular.z = self.left if center > self.frame_point[0] else self.right
             reached[1] = False
         else:
             self.desired_velocity.angular.z = self.stop
             reached[1] = True
         
-        print(self.point_xyz[1])
-        print(self.point_xyz[2])
-        print(reached[0])
-        print(reached[1])
+        #print(self.point_xyz[1])
+        #print(self.point_xyz[2])
+        #print(reached[0])
+        #print(reached[1])
         
         # Change flag if point is reached
         if reached == [True, True]:
@@ -278,6 +274,7 @@ class findCluedo():
             self.point_reached = False
             
         self.velocity.publish(self.desired_velocity)
+        print("Approaching. " + "Point Reached: " + str(self.point_reached))
         
         return
         
@@ -289,7 +286,7 @@ class findCluedo():
         #req = TriggerRequest()
         #res = self.cluedo_identifier_client(req)
         #self.card_detected = res.success
-        print("Waiting.", "Card Detected: ", self.card_detected)
+        print("Waiting." + "Card Detected: " + str(self.card_detected))
         return
         
     def exit_output(self):
