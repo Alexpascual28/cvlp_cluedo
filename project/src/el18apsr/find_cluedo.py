@@ -9,6 +9,7 @@ import time
 import message_filters
 import tf
 import math
+import random
 
 from geometry_msgs.msg import Twist, Vector3
 from sensor_msgs.msg import Image, PointCloud2
@@ -282,11 +283,11 @@ class findCluedo():
         self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.stop
         self.velocity.publish(self.desired_velocity)
-        self.card_detected = True
+        self.card_detected = random.random() < 0.01
         #req = TriggerRequest()
         #res = self.cluedo_identifier_client(req)
         #self.card_detected = res.success
-        print("Waiting." + "Card Detected: " + str(self.card_detected))
+        print("Waiting. " + "Card Detected: " + str(self.card_detected))
         return
         
     def exit_output(self):
