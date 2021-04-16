@@ -208,14 +208,20 @@ class findCluedo():
                 2: {
                     "output": self.wait_output,
                     "condition": self.card_detected,
-                    "second condition": True,
-                    "next_state": [0,3,2]
+                    "second condition": self.point_reached,
+                    "next_state": [3,4,1]
                     },
                 3: {
-                    "output": self.exit_output,
-                    "condition": False,
+                    "output": self.adjust_output,
+                    "condition": True,
                     "second condition": True,
-                    "next_state": [3,3,3]
+                    "next_state": [3,0,3]
+                    },
+                4: {
+                    "output": self.exit_output,
+                    "condition": True,
+                    "second condition": True,
+                    "next_state": [4,4,4]
                     }
             }
             state = fsm.get(self.current_state)
@@ -237,14 +243,16 @@ class findCluedo():
         return
     
     def approach_output(self):
-        """self.desired_velocity.angular.z = self.stop
-        self.velocity.publish(self.desired_velocity)"""
-        reached = [False, False] 
-        if self.point_xyz[2] < 0.9:
+        reached = [False, False]
+        # Approach object
+        print(self.point_xyz[1])
+        z_distance = 1 if self.point_xyz[1] > -0.2 else 2
+        print(z_distance)
+        if self.point_xyz[2] < z_distance - 0.1:
             # Too close to object, need to move backwards
             self.desired_velocity.linear.x = self.backward
             reached[0] = False
-        elif self.point_xyz[2] > 1.1:
+        elif self.point_xyz[2] > z_distance + 0.1:
             # Too far away from object, need to move forwards
             self.desired_velocity.linear.x = self.forward
             reached[0] = False
@@ -252,7 +260,7 @@ class findCluedo():
             self.desired_velocity.linear.x = self.stop
             reached[0] = True
         
-        #Alternatively cx,cy can be used to position and rotate towards the object
+        # Rotate towards the object
         _, width, _ = self.img_shape
         center = (width/2) - 1
         
@@ -263,11 +271,6 @@ class findCluedo():
             self.desired_velocity.angular.z = self.stop
             reached[1] = True
         
-        #print(self.point_xyz[1])
-        #print(self.point_xyz[2])
-        #print(reached[0])
-        #print(reached[1])
-        
         # Change flag if point is reached
         if reached == [True, True]:
             self.point_reached = True
@@ -276,20 +279,27 @@ class findCluedo():
             
         self.velocity.publish(self.desired_velocity)
         print("Approaching. " + "Point Reached: " + str(self.point_reached))
-        
         return
         
     def wait_output(self):
         self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.stop
         self.velocity.publish(self.desired_velocity)
-        self.card_detected = random.random() < 0.01
+        self.card_detected = random.random() < 0.3
         #req = TriggerRequest()
         #res = self.cluedo_identifier_client(req)
         #self.card_detected = res.success
         print("Waiting. " + "Card Detected: " + str(self.card_detected))
         return
         
+    def adjust_output(self):
+        self.desired_velocity.linear.x = self.stop
+        self.desired_velocity.angular.z = 1.57 # 90 degrees / second
+        self.velocity.publish(self.desired_velocity)
+        time.sleep(1) # for one second
+        print("Adjusting. " + "Card Detected: " + str(self.card_detected))
+        return
+    
     def exit_output(self):
         print("Exiting.")
         self.start = False
