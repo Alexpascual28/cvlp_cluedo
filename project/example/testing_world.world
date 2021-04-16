@@ -25,7 +25,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <visual name='visual'>
-          <pose>-2.5 -2.73 0.4 1.57 0.6 -3.14</pose>
+          <pose>-4.5 -2.73 0.4 1.57 0.6 -3.14</pose>
           <cast_shadows>0</cast_shadows>
           <geometry>
             <plane>
@@ -53,7 +53,7 @@
     </model>
     <light name='sun' type='directional'>
       <cast_shadows>1</cast_shadows>
-      <pose>0 0 1 0 -0 0</pose>
+      <pose>-3.8 -1.5 1 0 -0 0</pose>
       <diffuse>0.8 0.8 0.8 1</diffuse>
       <specular>1 1 1 1</specular>
       <attenuation>
@@ -66,7 +66,7 @@
     </light>
     <light name='light_a' type='point'>
       <cast_shadows>0</cast_shadows>
-      <pose>0 0 1 0 -0 0</pose>
+      <pose>-5.6 4.4 1 0 -0 0</pose>
       <diffuse>0.2 0.2 0.2 1</diffuse>
       <specular>1 1 1 1</specular>
       <attenuation>
@@ -79,7 +79,7 @@
     </light>
     <light name='light_b' type='point'>
       <cast_shadows>0</cast_shadows>
-      <pose>-7 6 1 0 -0 0</pose>
+      <pose>-3.6 1.5 1 0 -0 0</pose>
       <diffuse>0.2 0.2 0.2 0.2</diffuse>
       <specular>0.2 0.2 0.2 0.2</specular>
       <attenuation>
@@ -92,7 +92,7 @@
     </light>
     <light name='light_c' type='point'>
       <cast_shadows>0</cast_shadows>
-      <pose>-2.3 6 1 0 -0 0</pose>
+      <pose>-0.8 4.1 1 0 -0 0</pose>
       <diffuse>0.2 0.2 0.2 1</diffuse>
       <specular>1 1 1 1</specular>
       <attenuation>
@@ -105,7 +105,7 @@
     </light>
     <light name='light_d' type='point'>
       <cast_shadows>0</cast_shadows>
-      <pose>-7 2 1 0 -0 0</pose>
+      <pose>-7 0.6 1 0 -0 0</pose>
       <diffuse>0.2 0.2 0.2 1</diffuse>
       <specular>1 1 1 1</specular>
       <attenuation>
