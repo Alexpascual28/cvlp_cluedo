@@ -13,7 +13,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 class CluedoIdentifier:
     def __init__(self):
-        self.img_sub = rospy.Subscriber('/cluedo_img', Image, self.imgCallback)
+        self.img_sub = rospy.Subscriber('/camera/rgb/image_raw', Image, self.imgCallback)
         self.srv = rospy.Service("cluedo_identify", Trigger, self.srvCallback)
         
         self.cv_bridge = CvBridge()
@@ -55,10 +55,8 @@ class CluedoIdentifier:
     
     def featureDetector(self):
         # feature detection and matching using ORB
-
-        img_path = os.path.join(self.script_path, 'cluedo_character.png')
-        self.frame = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-        kp, des = self.orb.detectAndCompute(self.frame, None)
+        frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
+        kp, des = self.orb.detectAndCompute(frame, None)
 
         # brute force matching
         bf_matcher = cv2.BFMatcher()
@@ -153,6 +151,8 @@ class CluedoIdentifier:
 
     # saves the detection result into a txt file
     def saveDetection(self, detection):
+        img = os.path.join(self.script_path, 'cluedo_character.png')
+        cv2.imwrite(img, self.frame)
         file = os.path.join(self.script_path, 'cluedo_character.txt')
         with open(file, "w") as f:
             f.write(detection+"\n")
