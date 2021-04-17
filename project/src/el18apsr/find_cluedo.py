@@ -72,7 +72,7 @@ class findCluedo():
         self.synchroniser.registerCallback(self.tsCallback)
 
         return
-        
+    
     def tsCallback(self, img_msg, pc_msg):
         # Read cv_image from image message and cv bridge
         try:
@@ -126,7 +126,7 @@ class findCluedo():
         
         if len(contours[0]) > 0:
             max_contour = max(contours[0], key=cv2.contourArea)
-            if cv2.contourArea(max_contour) > 100:
+            if cv2.contourArea(max_contour) > 350:
                 # calculate center of contour and classified name
                 M = cv2.moments(max_contour)
                 if M['m00'] != 0:
@@ -161,7 +161,6 @@ class findCluedo():
         return
         
     def classify(self, contour):
-
         # Approximate shape of contour
         shape = "unknown"
         perimeter = cv2.arcLength(contour, True)
@@ -186,6 +185,11 @@ class findCluedo():
         
         res = TriggerResponse()
         res.success = self.card_detected
+        
+        self.frame_detected = False
+        self.point_reached = False
+        self.card_detected = False
+        
         return res
     
     def run_robot(self):
@@ -208,14 +212,14 @@ class findCluedo():
                 2: {
                     "output": self.wait_output,
                     "condition": self.card_detected,
-                    "second condition": self.point_reached,
+                    "second condition": True,
                     "next_state": [3,4,1]
                     },
                 3: {
                     "output": self.adjust_output,
-                    "condition": True,
+                    "condition": not self.card_detected,
                     "second condition": True,
-                    "next_state": [3,0,3]
+                    "next_state": [4,0,3]
                     },
                 4: {
                     "output": self.exit_output,
@@ -241,13 +245,13 @@ class findCluedo():
         self.velocity.publish(self.desired_velocity)
         print("Searching. " + "Frame Detected: " + str(self.frame_detected))
         return
-    
+
     def approach_output(self):
         reached = [False, False]
         # Approach object
-        print(self.point_xyz[1])
+        # print(self.point_xyz[1])
         z_distance = 1 if self.point_xyz[1] > -0.2 else 2
-        print(z_distance)
+        # print(z_distance)
         if self.point_xyz[2] < z_distance - 0.1:
             # Too close to object, need to move backwards
             self.desired_velocity.linear.x = self.backward
@@ -285,10 +289,20 @@ class findCluedo():
         self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.stop
         self.velocity.publish(self.desired_velocity)
-        self.card_detected = random.random() < 0.3
-        #req = TriggerRequest()
-        #res = self.cluedo_identifier_client(req)
-        #self.card_detected = res.success
+        # self.card_detected = random.random() < 0.3
+        rate = rospy.Rate(10)
+        counter = 0
+        for i in range(0, 5):
+            req = TriggerRequest()
+            res = self.cluedo_identifier_client(req)
+            if res.success:
+                counter = counter + 1
+            rate.sleep()
+        
+        print(counter)
+        if counter > 0:
+            self.card_detected = True
+        
         print("Waiting. " + "Card Detected: " + str(self.card_detected))
         return
         
@@ -301,16 +315,16 @@ class findCluedo():
         return
     
     def exit_output(self):
-        print("Exiting.")
+        # print("Exiting.")
         self.start = False
         return
         
 def main(args):
+    # And rospy.init the entire node
+    rospy.init_node('find_cluedo', anonymous=True)
+    
     # Instantiate class
     fC = findCluedo()
-
-    # And rospy.init the entire node
-    rospy.init_node('frame_detection', anonymous=True)
     
     # Ensure that node continues running with rospy.spin()
     # Wrap rospy.spin() in exception handler for KeyboardInterrupts
