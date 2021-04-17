@@ -7,11 +7,11 @@ import sys
 import os
 import numpy as np
 import yaml
+import actionlib
 
 from std_srvs.srv import SetBool
 from std_srvs.srv import Trigger, TriggerRequest
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-import actionlib
 from actionlib_msgs.msg import *
 from geometry_msgs.msg import Pose, Point, Quaternion
 
@@ -25,24 +25,20 @@ class TurtlebotControl:
         rospy.on_shutdown(self.shutdown)
 
         self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+        self.room_identify_client = rospy.ServiceProxy('/room_identify', Trigger)
         self.room_search_client = rospy.ServiceProxy('/room_search', Trigger)
-        self.cluedo_search_client = rospy.ServiceProxy('/cluedo_search', SetBool)
 
         print("Waiting for move_base server")
         self.move_base.wait_for_server()
         print("Node initialised!")
         return
-    
+
     def run(self):
         if not self.room_detected:
             self.searchForRoom()
         elif not self.cluedo_detected:
-            #TODO
-            pass
-        else:
-            #TODO
-            pass
-    
+            self.searchForCluedo()
+
     # same as lab4 file
     def sendCmd(self, pos, quat):
         self.goal_sent = True
@@ -76,8 +72,7 @@ class TurtlebotControl:
 
         current_room = 0
 
-        # not sure if this is always going to be the correct orientation to face the rooms
-        theta = 1.57
+        theta = 0.0
         quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : np.sin(theta/2.0), 'r4' : np.cos(theta/2.0)}
 
         while not self.room_detected:
@@ -100,10 +95,11 @@ class TurtlebotControl:
                 continue
 
             req = TriggerRequest()
-            res = self.room_search_client(req)
+            res = self.room_identify_client(req)
 
             if res.success:
                 self.room_detected = True
+                print("Entering room {}".format(current_room))
                 if current_room == 1:
                     position = {'x': self.room1_cent[0], 'y' : self.room1_cent[1]}
                     self.sendCmd(position, quaternion)
@@ -113,7 +109,11 @@ class TurtlebotControl:
         return
 
     def searchForCluedo(self):
-        #TODO
+        print("Sending request to room_search service")
+        req = TriggerRequest()
+        res = self.room_search_client(req)
+        
+        self.cluedo_detected = res.success
         return
 
     def _load_inputs(self):
