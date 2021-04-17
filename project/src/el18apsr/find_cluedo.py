@@ -200,8 +200,8 @@ class findCluedo():
                 0: {
                     "output": self.search_output,
                     "condition": self.frame_detected,
-                    "second condition": True,
-                    "next_state": [0,1,0]
+                    "second condition": not self.card_detected,
+                    "next_state": [0,1,4]
                     },
                 1: {
                     "output": self.approach_output,
@@ -212,14 +212,14 @@ class findCluedo():
                 2: {
                     "output": self.wait_output,
                     "condition": self.card_detected,
-                    "second condition": True,
+                    "second condition": self.point_reached,
                     "next_state": [3,4,1]
                     },
                 3: {
                     "output": self.adjust_output,
-                    "condition": not self.card_detected,
+                    "condition": True,
                     "second condition": True,
-                    "next_state": [4,0,3]
+                    "next_state": [3,0,4]
                     },
                 4: {
                     "output": self.exit_output,
@@ -289,10 +289,10 @@ class findCluedo():
         self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.stop
         self.velocity.publish(self.desired_velocity)
-        # self.card_detected = random.random() < 0.3
         rate = rospy.Rate(10)
         counter = 0
         for i in range(0, 5):
+            # self.card_detected = random.random() < 0.3
             req = TriggerRequest()
             res = self.cluedo_identifier_client(req)
             if res.success:
