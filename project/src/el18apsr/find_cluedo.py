@@ -42,6 +42,9 @@ class findCluedo():
         self.point_reached = False
         self.card_detected = False
         
+        # Print message inside of state (to stop spamming)
+        self.print_message = True
+        
         # Initialise any flags that signal a colour has been detected in view (default to false)
         self.red_detected = False
         self.yellow_detected = False
@@ -193,6 +196,9 @@ class findCluedo():
         return res
     
     def run_robot(self):
+        self.current_state = 0
+        self.print_message = True
+        
         start_t = time.time()
         while self.start and (time.time() - start_t) <= 240:
             # Finite state machine
@@ -218,7 +224,7 @@ class findCluedo():
                 3: {
                     "output": self.adjust_output,
                     "condition": True,
-                    "second condition": True,
+                    "second condition": not self.card_detected,
                     "next_state": [3,0,4]
                     },
                 4: {
@@ -228,14 +234,21 @@ class findCluedo():
                     "next_state": [4,4,4]
                     }
             }
+            previous_state = self.current_state
+            
             state = fsm.get(self.current_state)
-            output = state.get("output")
+            output = state.get("output")            
             condition = state.get("condition")
             second_condition = state.get("second condition")
+            
+            
             if second_condition == False:
                 self.current_state = state.get("next_state")[2]
             else:
                 self.current_state = state.get("next_state")[condition]
+            
+            self.print_message = True if self.current_state != previous_state else False
+            
             output()
         return
         
@@ -243,7 +256,8 @@ class findCluedo():
         self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.left
         self.velocity.publish(self.desired_velocity)
-        print("Searching. " + "Frame Detected: " + str(self.frame_detected))
+        if self.print_message == True:
+            print("Searching. " + "Frame Detected: " + str(self.frame_detected))
         return
 
     def approach_output(self):
@@ -278,21 +292,23 @@ class findCluedo():
         # Change flag if point is reached
         if reached == [True, True]:
             self.point_reached = True
+            self.print_message = True
         else:
             self.point_reached = False
             
         self.velocity.publish(self.desired_velocity)
-        print("Approaching. " + "Point Reached: " + str(self.point_reached))
+        if self.print_message == True:
+            print("Approaching. " + "Point Reached: " + str(self.point_reached))
         return
         
     def wait_output(self):
         self.desired_velocity.linear.x = self.stop
         self.desired_velocity.angular.z = self.stop
         self.velocity.publish(self.desired_velocity)
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(5)
         counter = 0
-        for i in range(0, 5):
-            # self.card_detected = random.random() < 0.3
+        for i in range(0, 20):
+            # detected = random.random() < 0.1
             req = TriggerRequest()
             res = self.cluedo_identifier_client(req)
             if res.success:
@@ -300,10 +316,14 @@ class findCluedo():
             rate.sleep()
         
         print(counter)
-        if counter > 0:
+        if counter > 2:
             self.card_detected = True
-        
-        print("Waiting. " + "Card Detected: " + str(self.card_detected))
+            self.print_message = True
+        else:
+            self.card_detected = True
+            
+        if self.print_message == True:
+            print("Waiting. " + "Card Detected: " + str(self.card_detected))
         return
         
     def adjust_output(self):
@@ -311,11 +331,13 @@ class findCluedo():
         self.desired_velocity.angular.z = 1.57 # 90 degrees / second
         self.velocity.publish(self.desired_velocity)
         time.sleep(1) # for one second
-        print("Adjusting. " + "Card Detected: " + str(self.card_detected))
+        if self.print_message == True:
+            print("Adjusting. " + "Card Detected: " + str(self.card_detected))
         return
     
     def exit_output(self):
-        # print("Exiting.")
+        if self.print_message == True:
+            print("Exiting.")
         self.start = False
         return
         
