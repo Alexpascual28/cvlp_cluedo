@@ -6,6 +6,7 @@ import rospy
 import cv2
 import sys
 import os
+import numpy as np
 
 from std_srvs.srv import Trigger, TriggerResponse
 from sensor_msgs.msg import Image
@@ -20,8 +21,26 @@ class CluedoIdentifier:
         self.orb = cv2.ORB()
 
         self.frame = None
-        self.threshold = 0.75 # for feature matching and template matching
+        self.threshold = 0.80 # for feature matching and template matching
         self.min_matches = 20 # for feature matching
+        
+        self.red_sensitivity = 10
+        self.yellow_sensitivity = 12
+        self.cyan_sensitivity = 16
+        self.magenta_sensitivity = 16
+        
+        # Red (Scarlet) = 0
+        self.hsv_red_lower = np.array([0-self.red_sensitivity, 100, 100])
+        self.hsv_red_upper = np.array([0+self.red_sensitivity, 255, 255])
+        # Yellow (Mustard) = 30
+        self.hsv_yellow_lower = np.array([30-self.yellow_sensitivity, 100, 100])
+        self.hsv_yellow_upper = np.array([30+self.yellow_sensitivity, 255, 255])
+        # Cyan (Peacock) = 90
+        self.hsv_cyan_lower = np.array([90-self.cyan_sensitivity, 100, 100])
+        self.hsv_cyan_upper = np.array([90+self.cyan_sensitivity, 255, 255])
+        # Magenta (Plum) = 150
+        self.hsv_magenta_lower = np.array([150-self.magenta_sensitivity, 30, 30])
+        self.hsv_magenta_upper = np.array([150+self.magenta_sensitivity, 255, 255])
         
         self.success = False
 
@@ -39,6 +58,7 @@ class CluedoIdentifier:
     def srvCallback(self, req):        
         self.success = False
         self.featureDetector()
+        # self.identifyTemplate()
         
         res = TriggerResponse()
         res.success = self.success
@@ -51,8 +71,37 @@ class CluedoIdentifier:
             print("Caught CvBridge error!")
             print(e)
 
+        # cv2.imshow('frame', self.frame)
+        # cv2.waitKey(1)
         return
     
+    def detectColour(self):
+        colour_id = None
+        
+        hsv_img = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
+        
+        ranges = [
+                    [self.hsv_red_lower, self.hsv_red_upper], [self.hsv_cyan_lower, self.hsv_cyan_upper],
+                    [self.hsv_magenta_lower, self.hsv_magenta_upper], [self.hsv_yellow_lower, self.hsv_yellow_upper]
+                ]
+        
+        for i in range(len(ranges)):
+            mask = cv2.inRange(hsv_img, ranges[i][0], ranges[i][1])
+            cnts, _ = cv2.findContours(mask.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+            if len(cnts) == 0:
+                continue
+            
+            largest_cnt = max(cnts, key=cv2.contourArea)
+            print(cv2.contourArea(largest_cnt))
+            if cv2.contourArea(largest_cnt) > 500:
+                colour_id = i
+                print(i)
+                cv2.imshow('mask', mask)
+                cv2.waitKey(0)
+                break
+            
+        return colour_id
+
     def featureDetector(self):
         # feature detection and matching using ORB
         frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
@@ -66,7 +115,9 @@ class CluedoIdentifier:
 
         flann = cv2.FlannBasedMatcher(idx_params, search_params)
         
-        best_result = (None, 0)    
+        colour_id = self.detectColour()
+        best_result = (None, 0)
+        results = list()
         for template in self.templates:
             good = []
             # matches = bf_matcher.knnMatch(des, template[4], k=2)
@@ -80,36 +131,44 @@ class CluedoIdentifier:
                 if len(m_n) != 2:
                     continue
                 m, n = m_n
-                if m.distance < 0.75*n.distance:
+                if m.distance < self.threshold*n.distance:
                     good.append([m])
-
-            if len(good) > best_result[1] and len(good) >= self.min_matches:
+            
+            crosscheck = self.crossCheck(colour_id, template[0])
+            if len(good) > best_result[1] and len(good) >= self.min_matches and crosscheck:
                 best_result = (template[0], len(good))
             
             print("Num matches for {}: {}".format(template[0], len(good)))
         
+        # cv2.imshow('frame', frame)
+        # cv2.waitKey(0)
         if best_result[1] != 0:
-            print("Best match: {} with {} matches".format(best_result[0], best_result[1]))
-            self.saveDetection(best_result[0])
-            self.success = True
+            if self.crossCheck(colour_id, best_result[0]) and not (colour_id is None):
+                print("Best match: {} with {} matches".format(best_result[0], best_result[1]))
+                self.saveDetection(best_result[0])
+                self.success = True
+            else:
+                rospy.logerr("Failed cross check!")
+                self.success = False
         else:
             rospy.logerr("Failed to identify any character in the frame!")
             self.success = False
         
         return
     
+    def crossCheck(self, colour_id, char_name):
+        return ( (colour_id == 0 and char_name == 'scarlet.png') or
+                (colour_id == 1 and char_name == 'peacock.png') or
+                (colour_id == 2 and char_name == 'plum.png') or
+                (colour_id == 3 and char_name == 'mustard.png')
+            )
+
     def identifyTemplate(self):
         # template matching method
         # implementation is somewhat scaling invariant but still can fail
         # it is NOT rotation invariant
-
-        img_path = os.path.join(self.script_path, 'cluedo_character.png')
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         
-        cv2.imshow('img', img)
-        # print(img.shape)
-
         best_result = None
         for template in self.templates:
             w, h = template[1].shape[::-1]
