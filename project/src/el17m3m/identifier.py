@@ -92,12 +92,12 @@ class CluedoIdentifier:
                 continue
             
             largest_cnt = max(cnts, key=cv2.contourArea)
-            print(cv2.contourArea(largest_cnt))
-            if cv2.contourArea(largest_cnt) > 500:
+            # print(cv2.contourArea(largest_cnt))
+            if cv2.contourArea(largest_cnt) > 300:
                 colour_id = i
-                print(i)
-                cv2.imshow('mask', mask)
-                cv2.waitKey(0)
+                # print(i)
+                # cv2.imshow('mask', mask)
+                # cv2.waitKey(0)
                 break
             
         return colour_id
@@ -175,7 +175,7 @@ class CluedoIdentifier:
             print("Testing: {}".format(template[0]))
 
             for i in reversed(range(40, 110, 10)):
-                print(i)
+                # print(i)
                 resized = cv2.resize(gray, (0,0), fx=i/100, fy=i/100)
                 
                 if resized.shape[0] < w or resized.shape[0] < h:
@@ -184,7 +184,7 @@ class CluedoIdentifier:
                 result = cv2.matchTemplate(resized, template[1], cv2.TM_CCOEFF)
                 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
                 ratio = float(100/i)
-                print(ratio)
+                # print(ratio)
 
                 if max_val >= self.threshold:
                     # cv2.rectangle(resized, max_loc, ((max_loc[0]+w), (max_loc[1]+h)), 255, 2)
