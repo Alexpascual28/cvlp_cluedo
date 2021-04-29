@@ -16,6 +16,7 @@ from sensor_msgs.msg import Image, PointCloud2
 from sensor_msgs import point_cloud2
 from std_srvs.srv import Trigger, TriggerRequest, TriggerResponse
 from cv_bridge import CvBridge, CvBridgeError
+from kobuki_msgs.msg import BumperEvent
 
 class findCluedo():
     def __init__(self):
@@ -60,6 +61,7 @@ class findCluedo():
         self.cyan_sensitivity = 16
         self.magenta_sensitivity = 16
         
+        self.collision = False
         # 3D point from camera
         self.point_xyz = []
 
@@ -72,11 +74,30 @@ class findCluedo():
         # Set up a subscribers to the image topic and the depth point cloud
         self.image_sub = message_filters.Subscriber('camera/rgb/image_raw', Image)
         self.pc_sub = message_filters.Subscriber('/camera/depth/points', PointCloud2)
+        self.bumper_sub = rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, self.bumperCallback)
 
         # Synchronize depth point cloud and raw images
         self.synchroniser = message_filters.TimeSynchronizer([self.image_sub, self.pc_sub], 10)
         self.synchroniser.registerCallback(self.tsCallback)
 
+        return
+    
+    def bumperCallback(self, data):
+        self.collision = bool(data.state)
+        
+        if self.collision:
+            print("Collision!")
+            start = time.time()
+            self.desired_velocity.linear.x = self.backward
+            self.desired_velocity.angular.z = self.stop
+            while time.time() - start <= 3:
+                self.velocity.publish(self.desired_velocity)
+            
+            start = time.time()
+            self.desired_velocity.linear.x = self.stop
+            self.desired_velocity.angular.z = math.pi/2
+            while time.time() - start <= 1:
+                self.velocity.publish(self.desired_velocity)                
         return
     
     def tsCallback(self, img_msg, pc_msg):
@@ -90,16 +111,16 @@ class findCluedo():
 
         # Set upper and lower bounds for HSV colours
         # Red (Scarlet) = 0
-        hsv_red_lower = np.array([0-(self.red_sensitivity+5), 100, 100])
+        hsv_red_lower = np.array([0-(self.red_sensitivity), 100, 100])
         hsv_red_upper = np.array([0+self.red_sensitivity, 255, 255])
         # Yellow (Mustard) = 30
-        hsv_yellow_lower = np.array([30-(self.yellow_sensitivity+5), 100, 100])
+        hsv_yellow_lower = np.array([30-(self.yellow_sensitivity), 100, 100])
         hsv_yellow_upper = np.array([30+self.yellow_sensitivity, 255, 255])
         # Cyan (Peacock) = 90
-        hsv_cyan_lower = np.array([90-(self.cyan_sensitivity+5), 100, 100])
+        hsv_cyan_lower = np.array([90-(self.cyan_sensitivity), 100, 100])
         hsv_cyan_upper = np.array([90+self.cyan_sensitivity, 255, 255])
         # Magenta (Plum) = 150
-        hsv_magenta_lower = np.array([150-(self.magenta_sensitivity+5), 30, 30])
+        hsv_magenta_lower = np.array([150-(self.magenta_sensitivity), 30, 30])
         hsv_magenta_upper = np.array([150+self.magenta_sensitivity, 255, 255])
         
         # Convert rgb image into hsv image
@@ -132,8 +153,9 @@ class findCluedo():
         
         if len(contours[0]) > 0:
             max_contour = max(contours[0], key=cv2.contourArea)
-            if cv2.contourArea(max_contour) > 350:
+            if cv2.contourArea(max_contour) > 350 and cv2.contourArea(max_contour) < 35000:
                 # calculate center of contour and classified name
+                # print(cv2.contourArea(max_contour))
                 M = cv2.moments(max_contour)
                 if M['m00'] != 0:
                     center_x, center_y = int(M['m10']/M['m00']), int(M['m01']/M['m00'])
@@ -203,7 +225,16 @@ class findCluedo():
         self.print_message = True
         
         start_t = time.time()
-        while self.start and (time.time() - start_t) <= 240:
+        
+        directions = [-1, 1]
+        self.direction = random.choice(directions)
+        
+        self.max_timer_counter = 600
+        
+        num = self.max_timer_counter*0.4
+        min_num = self.max_timer_counter*0.3
+        self.rotate_counter = num + (num-min_num)*(self.rotate_counter)
+        while self.start and (time.time() - start_t) <= 60:
             # Finite state machine
             fsm = {
                 0: {
@@ -261,23 +292,40 @@ class findCluedo():
             self.print_message = True if self.current_state != previous_state else False
         return
         
-    def search_output(self):
+    def search_output(self):    
+        if self.collision:
+            return
+
         self.timer_counter += 1
-        if self.timer_counter > 80:
+        if self.timer_counter > self.max_timer_counter:
             self.timer_counter = 0
             self.repeat_counter += 1
+            
+            directions = [-1, 1]
+            self.direction = random.choice(directions)
+            
+            self.rotate_counter = random.random()
+            max_num = self.max_timer_counter*0.4
+            min_num = self.max_timer_counter*0.2
+            
+            self.rotate_counter = max_num + (max_num-min_num)*(self.rotate_counter)
+            
+            print("rotate count {}".format(self.rotate_counter))
+            print("Dir: {}".format(self.direction))
             print(self.repeat_counter)
             if self.repeat_counter > 5:
                 self.repeat_counter = 0
                 self.current_state = 4
-        if self.timer_counter < 60:
+        
+        if self.timer_counter < self.rotate_counter:
             self.desired_velocity.linear.x = self.stop
-            self.desired_velocity.angular.z = self.left
+            self.desired_velocity.angular.z = self.left * self.direction
         else:
             self.desired_velocity.linear.x = self.forward
             self.desired_velocity.angular.z = self.stop
+        
         self.velocity.publish(self.desired_velocity)
-        time.sleep(1/80)
+        time.sleep(15/self.max_timer_counter)
         if self.frame_detected == True:
             self.repeat_counter = 0
         if self.print_message == True:

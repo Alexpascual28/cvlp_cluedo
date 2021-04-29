@@ -9,6 +9,7 @@ import numpy as np
 import yaml
 import actionlib
 
+from nav_msgs.msg import Odometry
 from std_srvs.srv import SetBool
 from std_srvs.srv import Trigger, TriggerRequest
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -24,15 +25,22 @@ class TurtlebotControl:
         self.goal_sent = False
         rospy.on_shutdown(self.shutdown)
 
+        self.odom_sub = rospy.Subscriber('/odom', Odometry, self.odomCallback)
         self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
         self.room_identify_client = rospy.ServiceProxy('/room_identify', Trigger)
         self.room_search_client = rospy.ServiceProxy('/room_search', Trigger)
+        
+        self.cluedo_room_centre = None
 
         print("Waiting for move_base server")
         self.move_base.wait_for_server()
         print("Node initialised!")
         return
-
+    
+    def odomCallback(self, msg):
+        self.robot_pose = msg.pose.pose
+        return
+    
     def run(self):
         if not self.room_detected:
             self.searchForRoom()
@@ -102,18 +110,28 @@ class TurtlebotControl:
                 print("Entering room {}".format(current_room))
                 if current_room == 1:
                     position = {'x': self.room1_cent[0], 'y' : self.room1_cent[1]}
+                    self.cluedo_room_centre = self.room1_cent
                     self.sendCmd(position, quaternion)
                 else:
                     position = {'x': self.room2_cent[0], 'y' : self.room2_cent[1]}
+                    self.cluedo_room_centre = self.room2_cent
                     self.sendCmd(position, quaternion)
         return
 
     def searchForCluedo(self):
         print("Sending request to room_search service")
-        req = TriggerRequest()
-        res = self.room_search_client(req)
+
+        rate = rospy.Rate(10)
+        pos = {'x': self.cluedo_room_centre[0], 'y': self.cluedo_room_centre[1]}
+        while not self.cluedo_detected:
+            quaternion = {'r1' : 0.000, 'r2' : 0.000, 'r3' : self.robot_pose.orientation.z, 'r4' : self.robot_pose.orientation.w}
+            self.sendCmd(pos, quaternion)
+            req = TriggerRequest()
+            res = self.room_search_client(req)
+            
+            self.cluedo_detected = res.success
+            rate.sleep()
         
-        self.cluedo_detected = res.success
         return
 
     def _load_inputs(self):
