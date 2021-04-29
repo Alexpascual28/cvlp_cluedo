@@ -231,6 +231,7 @@ class findCluedo():
         
         self.max_timer_counter = 600
         
+        self.rotate_counter = random.random()
         num = self.max_timer_counter*0.4
         min_num = self.max_timer_counter*0.3
         self.rotate_counter = num + (num-min_num)*(self.rotate_counter)
