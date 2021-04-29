@@ -84,9 +84,9 @@ class RoomIdentifier:
                 cv2.circle(frame, (i[0], i[1]), i[2], (255,0,255), 2)
                 cv2.circle(frame, (i[0], i[1]), 2, (255,0,255), 2)
         
-        cv2.imshow("Detection", frame)
-        cv2.imshow("mask", green_msk)
-        cv2.waitKey(1)
+        # cv2.imshow("Detection", frame)
+        # cv2.imshow("mask", green_msk)
+        # cv2.waitKey(1)
         
         if len(cnts) == 0 or circles is None:
             return False
