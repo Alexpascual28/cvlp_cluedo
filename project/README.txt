@@ -14,7 +14,7 @@ There are four main scripts in the src/ directory:
 - el17m3m/identifier.py
 - el17m3m/room_finder.py
 - el17m3m/turtlebot_control.py
-- el18apsr/find_cluedo.py
+- el18apsr/find_cluedo_rand.py
 
 The scripts can be run in any order except for the turtlebot_control.py, which should be run last.
 
