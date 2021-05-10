@@ -107,8 +107,8 @@ class RoomIdentifier:
                 is_circle = True
                 break
         
-        if not is_circle:
-            return False
+        # if not is_circle:
+        #     return False
         
         centre = (int(x), int(y))
         cv2.circle(frame, centre, int(radius), (0, 0, 255), 1)
@@ -117,7 +117,7 @@ class RoomIdentifier:
         _, width, _ = frame.shape
         mid_x = (width/2) - 1
         vel_msg = Twist()
-        if abs(mid_x - cx) > 30:
+        if abs(mid_x - cx) > 60:
             print("[ROOM_IDENTIFIER]: Turning to centre target!")
             vel_msg.angular.z = 0.05 if mid_x > cx else -0.05
             self.vel_pub.publish(vel_msg)
