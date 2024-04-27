@@ -67,7 +67,7 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                          | Summary                         |
 | ---                                                                                           | ---                             |
-| [README.txt](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/README.txt) | <code>► INSERT-TEXT-HERE</code> |
+| [README.txt](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/README.txt) | <code> </code> |
 
 </details>
 
@@ -75,9 +75,9 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                 | Summary                         |
 | ---                                                                                                                  | ---                             |
-| [room_explorer.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18ac/room_explorer.py) | <code>► INSERT-TEXT-HERE</code> |
-| [room_locator.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18ac/room_locator.py)   | <code>► INSERT-TEXT-HERE</code> |
-| [colour_search.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18ac/colour_search.py) | <code>► INSERT-TEXT-HERE</code> |
+| [room_explorer.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18ac/room_explorer.py) | <code> </code> |
+| [room_locator.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18ac/room_locator.py)   | <code> </code> |
+| [colour_search.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18ac/colour_search.py) | <code> </code> |
 
 </details>
 
@@ -85,9 +85,9 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                         | Summary                         |
 | ---                                                                                                                          | ---                             |
-| [find_cluedo_rand.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18apsr/find_cluedo_rand.py) | <code>► INSERT-TEXT-HERE</code> |
-| [frame_detection.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18apsr/frame_detection.py)   | <code>► INSERT-TEXT-HERE</code> |
-| [find_cluedo.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18apsr/find_cluedo.py)           | <code>► INSERT-TEXT-HERE</code> |
+| [find_cluedo_rand.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18apsr/find_cluedo_rand.py) | <code> </code> |
+| [frame_detection.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18apsr/frame_detection.py)   | <code> </code> |
+| [find_cluedo.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el18apsr/find_cluedo.py)           | <code> </code> |
 
 </details>
 
@@ -95,10 +95,10 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                          | Summary                         |
 | ---                                                                                                                           | ---                             |
-| [room_finder.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/room_finder.py)             | <code>► INSERT-TEXT-HERE</code> |
-| [img_saver.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/img_saver.py)                 | <code>► INSERT-TEXT-HERE</code> |
-| [turtlebot_control.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/turtlebot_control.py) | <code>► INSERT-TEXT-HERE</code> |
-| [identifier.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/identifier.py)               | <code>► INSERT-TEXT-HERE</code> |
+| [room_finder.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/room_finder.py)             | <code> </code> |
+| [img_saver.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/img_saver.py)                 | <code> </code> |
+| [turtlebot_control.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/turtlebot_control.py) | <code> </code> |
+| [identifier.py](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/src/el17m3m/identifier.py)               | <code> </code> |
 
 </details>
 
@@ -106,11 +106,11 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                | Summary                         |
 | ---                                                                                                                                 | ---                             |
-| [testing_world.world](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/testing_world.world)             | <code>► INSERT-TEXT-HERE</code> |
-| [input_points.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/input_points.yaml)                 | <code>► INSERT-TEXT-HERE</code> |
-| [example_inputs.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/example_inputs.yaml)             | <code>► INSERT-TEXT-HERE</code> |
-| [testing_world_inputs.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/testing_world_inputs.yaml) | <code>► INSERT-TEXT-HERE</code> |
-| [project.world](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/project.world)                         | <code>► INSERT-TEXT-HERE</code> |
+| [testing_world.world](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/testing_world.world)             | <code> </code> |
+| [input_points.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/input_points.yaml)                 | <code> </code> |
+| [example_inputs.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/example_inputs.yaml)             | <code> </code> |
+| [testing_world_inputs.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/testing_world_inputs.yaml) | <code> </code> |
+| [project.world](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/project.world)                         | <code> </code> |
 
 </details>
 
@@ -118,8 +118,8 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                              | Summary                         |
 | ---                                                                                                                               | ---                             |
-| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/cluedo_character/model.sdf)       | <code>► INSERT-TEXT-HERE</code> |
-| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/cluedo_character/model.config) | <code>► INSERT-TEXT-HERE</code> |
+| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/cluedo_character/model.sdf)       | <code> </code> |
+| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/cluedo_character/model.config) | <code> </code> |
 
 </details>
 
@@ -127,7 +127,7 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                                                          | Summary                         |
 | ---                                                                                                                                                                           | ---                             |
-| [Cluedo_character.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/cluedo_character/materials/scripts/Cluedo_character.material) | <code>► INSERT-TEXT-HERE</code> |
+| [Cluedo_character.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/cluedo_character/materials/scripts/Cluedo_character.material) | <code> </code> |
 
 </details>
 
@@ -135,8 +135,8 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                         | Summary                         |
 | ---                                                                                                                          | ---                             |
-| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/green_image/model.sdf)       | <code>► INSERT-TEXT-HERE</code> |
-| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/green_image/model.config) | <code>► INSERT-TEXT-HERE</code> |
+| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/green_image/model.sdf)       | <code> </code> |
+| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/green_image/model.config) | <code> </code> |
 
 </details>
 
@@ -144,7 +144,7 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                                           | Summary                         |
 | ---                                                                                                                                                            | ---                             |
-| [green_image.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/green_image/materials/scripts/green_image.material) | <code>► INSERT-TEXT-HERE</code> |
+| [green_image.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/green_image/materials/scripts/green_image.material) | <code> </code> |
 
 </details>
 
@@ -152,10 +152,10 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                               | Summary                         |
 | ---                                                                                                                                | ---                             |
-| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model.sdf)         | <code>► INSERT-TEXT-HERE</code> |
-| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model.config)   | <code>► INSERT-TEXT-HERE</code> |
-| [model-1_4.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model-1_4.sdf) | <code>► INSERT-TEXT-HERE</code> |
-| [model-1_3.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model-1_3.sdf) | <code>► INSERT-TEXT-HERE</code> |
+| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model.sdf)         | <code> </code> |
+| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model.config)   | <code> </code> |
+| [model-1_4.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model-1_4.sdf) | <code> </code> |
+| [model-1_3.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/model-1_3.sdf) | <code> </code> |
 
 </details>
 
@@ -163,7 +163,7 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                                           | Summary                         |
 | ---                                                                                                                                                            | ---                             |
-| [grey_wall.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/materials/scripts/grey_wall.material) | <code>► INSERT-TEXT-HERE</code> |
+| [grey_wall.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/grey_wall_small/materials/scripts/grey_wall.material) | <code> </code> |
 
 </details>
 
@@ -171,8 +171,8 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                       | Summary                         |
 | ---                                                                                                                        | ---                             |
-| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/model.sdf)       | <code>► INSERT-TEXT-HERE</code> |
-| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/model.config) | <code>► INSERT-TEXT-HERE</code> |
+| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/model.sdf)       | <code> </code> |
+| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/model.config) | <code> </code> |
 
 </details>
 
@@ -180,7 +180,7 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                                     | Summary                         |
 | ---                                                                                                                                                      | ---                             |
-| [red_image.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/materials/scripts/red_image.material) | <code>► INSERT-TEXT-HERE</code> |
+| [red_image.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/materials/scripts/red_image.material) | <code> </code> |
 
 </details>
 
@@ -188,8 +188,8 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                 | Summary                         |
 | ---                                                                                                                                  | ---                             |
-| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/red_image/model.sdf)       | <code>► INSERT-TEXT-HERE</code> |
-| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/red_image/model.config) | <code>► INSERT-TEXT-HERE</code> |
+| [model.sdf](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/red_image/model.sdf)       | <code> </code> |
+| [model.config](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/red_image/model.config) | <code> </code> |
 
 </details>
 
@@ -197,7 +197,7 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                                                               | Summary                         |
 | ---                                                                                                                                                                | ---                             |
-| [red_image.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/red_image/materials/scripts/red_image.material) | <code>► INSERT-TEXT-HERE</code> |
+| [red_image.material](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/models/red_image/red_image/materials/scripts/red_image.material) | <code> </code> |
 
 </details>
 
@@ -205,8 +205,8 @@ For further details, refer to the project descriptions provided in the provided 
 
 | File                                                                                                                  | Summary                         |
 | ---                                                                                                                   | ---                             |
-| [test_map.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/map/test_map.yaml)       | <code>► INSERT-TEXT-HERE</code> |
-| [project_map.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/map/project_map.yaml) | <code>► INSERT-TEXT-HERE</code> |
+| [test_map.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/map/test_map.yaml)       | <code> </code> |
+| [project_map.yaml](https://github.com/Alexpascual28/cvlp_cluedo.git/blob/master/project/example/map/project_map.yaml) | <code> </code> |
 
 </details>
 
